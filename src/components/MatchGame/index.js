@@ -1,4 +1,7 @@
 import {Component} from 'react'
+import ImageItem from '../ImageItem'
+import TabItem from '../TabItem'
+
 import './index.css'
 
 const tabsList = [
@@ -248,7 +251,12 @@ const imagesList = [
 ]
 
 class MatchGame extends Component {
-  state = {score: 0, time: 60, activeTabId: tabsList[0].tabId}
+  state = {
+    score: 0,
+    time: 60,
+    activeTabId: tabsList[0].tabId,
+    activeImageId: imagesList[0].id,
+  }
 
   componentDidMount() {
     this.timerId = setInterval(this.tick, 1000)
@@ -260,6 +268,13 @@ class MatchGame extends Component {
 
   updateActiveTabId = tabId => {
     this.setState({activeTabId: tabId})
+  }
+
+  updateImageId = id => {
+    const {activeImageId, score} = this.state
+    if (activeImageId === id) {
+      this.setState({score: score + 1})
+    }
   }
 
   getFilteredImages = () => {
@@ -300,39 +315,27 @@ class MatchGame extends Component {
           </div>
         </nav>
         <div className="display-container">
-          <ul>
-            <li>
-              <img src={imagesList[randomImg].imageUrl} alt="thumbnail" />
-            </li>
-          </ul>
+          <img src={imagesList[randomImg].imageUrl} alt="thumbnail" />
         </div>
         <div className="tabs-container">
           <ul>
             {tabsList.map(eachTab => (
-              <li>
-                <button
-                  type="button"
-                  className="tabs"
-                  onClick={this.updateActiveTabId}
-                >
-                  {eachTab.displayText}
-                </button>
-              </li>
+              <TabItem
+                tabDetails={eachTab}
+                updateActiveTab={this.updateActiveTabId}
+                key={eachTab.tabId}
+              />
             ))}
           </ul>
         </div>
         <div className="tumbnail-img-conatiner">
           <ul>
             {filteredImages.map(each => (
-              <li key={each.id}>
-                <button type="button">
-                  <img
-                    src={each.thumbnailUrl}
-                    onClick={this.onClickImg}
-                    alt={each.category}
-                  />
-                </button>
-              </li>
+              <ImageItem
+                imageDetails={each}
+                updateImage={this.updateImageId}
+                key={each.id}
+              />
             ))}
           </ul>
         </div>
