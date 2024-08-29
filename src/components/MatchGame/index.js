@@ -256,25 +256,15 @@ class MatchGame extends Component {
     time: 60,
     activeTabId: tabsList[0].tabId,
     activeImageId: imagesList[0].id,
+    thumbnailImage: imagesList[0].thumbnailUrl,
   }
 
   componentDidMount() {
     this.timerId = setInterval(this.tick, 1000)
   }
 
-  tick = () => {
-    this.setState(prevState => ({time: prevState.time - 1}))
-  }
-
-  updateActiveTabId = tabId => {
-    this.setState({activeTabId: tabId})
-  }
-
-  updateImageId = id => {
-    const {activeImageId, score} = this.state
-    if (activeImageId === id) {
-      this.setState({score: score + 1})
-    }
+  componentWillUnmount() {
+    clearInterval(this.timerId)
   }
 
   getFilteredImages = () => {
@@ -285,14 +275,30 @@ class MatchGame extends Component {
     return filteredImages
   }
 
-  compoundWillUnmount() {
-    clearInterval(this.timerId)
+  updateActiveTabId = tabId => {
+    this.setState({activeTabId: tabId})
+  }
+
+  updateImageId = id => {
+    const {activeImageId, score} = this.state
+    if (activeImageId === id) {
+      this.setState(prevState => ({
+        ...prevState,
+        score: score + 1,
+        thumbnailImage:
+          imagesList[Math.floor(Math.random() * imagesList.length)]
+            .thumbnailUrl,
+      }))
+    }
+  }
+
+  tick = () => {
+    this.setState(prevState => ({time: prevState.time - 1}))
   }
 
   render() {
     const filteredImages = this.getFilteredImages()
-    const {score, time} = this.state
-    const randomImg = Math.floor(Math.random() * imagesList.length)
+    const {score, time, thumbnailImage} = this.state
 
     return (
       <div className="app-container">
@@ -315,7 +321,7 @@ class MatchGame extends Component {
           </div>
         </nav>
         <div className="display-container">
-          <img src={imagesList[randomImg].imageUrl} alt="thumbnail" />
+          <img src={thumbnailImage} alt="thumbnail" />
         </div>
         <div className="tabs-container">
           <ul>
@@ -328,7 +334,7 @@ class MatchGame extends Component {
             ))}
           </ul>
         </div>
-        <div className="tumbnail-img-conatiner">
+        <div className="thumbnail-img-container">
           <ul>
             {filteredImages.map(each => (
               <ImageItem

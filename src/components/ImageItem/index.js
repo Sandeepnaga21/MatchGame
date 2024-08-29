@@ -11,7 +11,9 @@ const ImageItem = props => {
   return (
     <div>
       <li key={category}>
-        <img src={imageUrl} alt={category} onClick={onClickImg} />
+        <button type="button" onClick={onClickImg}>
+          <img src={imageUrl} alt={category} value={id} />
+        </button>
       </li>
     </div>
   )
