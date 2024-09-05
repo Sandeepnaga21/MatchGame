@@ -1,6 +1,7 @@
 import {Component} from 'react'
-import ImageItem from '../ImageItem'
-import TabItem from '../TabItem'
+import Header from '../Header'
+import ShowScoreCard from '../ShowScoreCard'
+import NavBar from '../NavBar'
 
 import './index.css'
 
@@ -275,16 +276,23 @@ class MatchGame extends Component {
     return filteredImages
   }
 
+  onClickPlayAgainBtn = () => {
+    this.setState({score: 0, time: 60})
+  }
+
   updateActiveTabId = tabId => {
     this.setState({activeTabId: tabId})
   }
 
+  updateActiveImageId = imageId => {
+    this.setState({activeTabId: imageId})
+  }
+
   updateImageId = id => {
-    const {activeImageId, score} = this.state
+    const {activeImageId} = this.state
     if (activeImageId === id) {
       this.setState(prevState => ({
-        ...prevState,
-        score: score + 1,
+        score: prevState.score + 1,
         thumbnailImage:
           imagesList[Math.floor(Math.random() * imagesList.length)]
             .thumbnailUrl,
@@ -293,58 +301,35 @@ class MatchGame extends Component {
   }
 
   tick = () => {
-    this.setState(prevState => ({time: prevState.time - 1}))
+    const {time} = this.state
+    time > 0 && this.setState(prevState => ({time: prevState.time - 1}))
   }
 
   render() {
     const filteredImages = this.getFilteredImages()
     const {score, time, thumbnailImage} = this.state
+    console.log(score)
+
+    const showScoreCard = time === 0
 
     return (
-      <div className="app-container">
-        <nav className="nav-bar">
-          <div>
-            <img
-              src="https://assets.ccbp.in/frontend/react-js/match-game-website-logo.png"
-              alt="website logo"
-              className="logo"
-            />
-          </div>
-          <div>
-            <p className="score">Score: {score}</p>
-            <img
-              src="https://assets.ccbp.in/frontend/react-js/match-game-timer-img.png"
-              alt="timer"
-              className="time-img"
-            />
-            <p className="time">{time} sec</p>
-          </div>
-        </nav>
-        <div className="display-container">
-          <img src={thumbnailImage} alt="thumbnail" />
-        </div>
-        <div className="tabs-container">
-          <ul>
-            {tabsList.map(eachTab => (
-              <TabItem
-                tabDetails={eachTab}
-                updateActiveTab={this.updateActiveTabId}
-                key={eachTab.tabId}
-              />
-            ))}
-          </ul>
-        </div>
-        <div className="thumbnail-img-container">
-          <ul>
-            {filteredImages.map(each => (
-              <ImageItem
-                imageDetails={each}
-                updateImage={this.updateImageId}
-                key={each.id}
-              />
-            ))}
-          </ul>
-        </div>
+      <div className='app-container'>
+        <Header score={score} time={time} />
+        {showScoreCard ? (
+          <ShowScoreCard
+            score={score}
+            onClickPlayAgainBtn={this.onClickPlayAgainBtn}
+          />
+        ) : (
+          <NavBar
+            updateActiveImageId={this.updateActiveImageId}
+            updateActiveTabId={this.updateActiveTabId}
+            updateImageId={this.updateImageId}
+            thumbnailImage={thumbnailImage}
+            filteredImages={filteredImages}
+            tabsList={tabsList}
+          />
+        )}
       </div>
     )
   }

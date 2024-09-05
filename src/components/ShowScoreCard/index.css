@@ -1,0 +1,15 @@
+.trophy {
+  height: 250px;
+  width: 250px;
+  text-align: center;
+}
+.container {
+  background-image: url('https://assets.ccbp.in/frontend/react-js/match-game-score-card-lg-bg.png');
+  background-size: cover;
+  height: 100vh;
+  text-align: center;
+}
+.head {
+  font-size: 30px;
+  text-align: center;
+}
