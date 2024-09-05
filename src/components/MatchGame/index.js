@@ -288,9 +288,9 @@ class MatchGame extends Component {
     this.setState({activeTabId: imageId})
   }
 
-  updateImageId = id => {
-    const {activeImageId} = this.state
-    if (activeImageId === id) {
+  updateImageId = thumbnailUrl => {
+    const {thumbnailImage} = this.state 
+    if (thumbnailImage === thumbnailUrl) {
       this.setState(prevState => ({
         score: prevState.score + 1,
         thumbnailImage:
